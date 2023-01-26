@@ -7,11 +7,21 @@ from django.views import View
 from django.contrib.auth.decorators import login_required
 
 from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm
-
+from pathlib import Path
+import glob
+import shutil
+import os
 
 def home(request):
+
+
+    user_form = UpdateUserForm(instance=request.user)
+    profile_form = UpdateProfileForm(instance=request.user.profile)
+
     
-    return render(request, 'users/home.html')
+
+    # return render(request, 'users/profile.html', {'user_form': user_form, 'profile_form': profile_form})
+    return render(request, 'users/home.html',{'user_form': user_form, 'profile_form': profile_form})
 
 
 class RegisterView(View):
@@ -89,7 +99,7 @@ def profile(request):
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
-            messages.success(request, 'Your Photo is moved to screenshot folder')
+            messages.success(request, 'Your Photo is moved to respective folder')
             return redirect(to='users-profile')
     else:
         user_form = UpdateUserForm(instance=request.user)
